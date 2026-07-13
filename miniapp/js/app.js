@@ -5,6 +5,7 @@ let currentUser = null;
 const welcomeEl = document.getElementById('welcome');
 const actionsEl = document.getElementById('actions');
 const withdrawSectionEl = document.getElementById('withdraw-section');
+const depositAmountsEl = document.getElementById('deposit-amounts');
 const withdrawAmountsEl = document.getElementById('withdraw-amounts');
 const withdrawHintEl = document.getElementById('withdraw-hint');
 const nftSectionEl = document.getElementById('nft-section');
@@ -60,6 +61,32 @@ async function requestWithdraw(amount) {
   }
 
   showStatus(`Запрос на вывод ${amount} ₽ отправлен. Жди подтверждения админа.`, true);
+}
+
+async function loadDepositButtons() {
+  const response = await fetch('/api/deposit-info');
+  if (!response.ok) {
+    showStatus('Не удалось загрузить суммы пополнения.');
+    return;
+  }
+
+  const data = await response.json();
+
+  depositAmountsEl.innerHTML = data.amounts
+    .map(
+      (amount) => `
+        <button class="btn btn-amount" data-amount="${amount}">
+          ${amount} ₽
+        </button>
+      `
+    )
+    .join('');
+
+  depositAmountsEl.querySelectorAll('.btn-amount').forEach((btn) => {
+    btn.addEventListener('click', async () => {
+      await requestDeposit(Number(btn.dataset.amount));
+    });
+  });
 }
 
 async function loadWithdrawSection() {
@@ -242,14 +269,8 @@ async function login() {
 
   updateBalance(currentUser.balance);
   actionsEl.classList.remove('hidden');
+  await loadDepositButtons();
 }
-
-document.querySelectorAll('.btn-amount').forEach((btn) => {
-  btn.addEventListener('click', async () => {
-    const amount = Number(btn.dataset.amount);
-    await requestDeposit(amount);
-  });
-});
 
 document.getElementById('btn-withdraw').addEventListener('click', async () => {
   welcomeEl.classList.add('hidden');

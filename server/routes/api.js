@@ -15,6 +15,7 @@ const {
 } = require('../db');
 const nftCatalog = require('../nft-catalog');
 const withdrawConfig = require('../withdraw-config');
+const depositConfig = require('../deposit-config');
 const {
   notifyAdmin,
   formatUserName,
@@ -161,6 +162,12 @@ router.post('/deposit-request', (req, res) => {
 });
 
 // Настройки вывода для Mini App
+router.get('/deposit-info', (req, res) => {
+  res.json({
+    amounts: depositConfig.amounts,
+  });
+});
+
 router.get('/withdraw-info', (req, res) => {
   res.json({
     minAmount: withdrawConfig.minAmount,
