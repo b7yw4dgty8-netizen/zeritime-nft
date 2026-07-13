@@ -16,6 +16,7 @@ const {
   getUserNfts,
 } = require('./db');
 const withdrawConfig = require('./withdraw-config');
+const nftCatalog = require('./nft-catalog');
 
 let bot = null;
 
@@ -161,6 +162,27 @@ function startBot({ token, adminTelegramId, miniAppUrl }) {
     const replyText = `👤 ${user.first_name}\n💰 Баланс: ${user.balance} ₽`;
 
     await bot.sendMessage(chatId, replyText);
+  });
+
+  bot.onText(/\/price(?:\s+(\w+))?/, async (msg match) => {
+    const chatId =msg.chat.id;
+    const nftId = match[1];
+
+    if (!nftId) {
+      await bot.sendMessage(chatId, 'Напиши так:\n/price owl');
+      return;
+    }
+
+    const nft = nftCatalog.find((item) => item.id === nftId);
+
+    if (!nft) {
+      await bot.sendMessage(chatId, 'Такого NFT нет в каталоге');
+      return;
+    }
+
+    const replyText = `🖼️ ${nft.name}\n💰 Цена:: ${nft.price} ₽`;
+
+    await bot.sendMessage(chatId, replyText):
   });
 
   // ═══ УРОК 7: /help — перечисли команды в replyText ниже ═══
