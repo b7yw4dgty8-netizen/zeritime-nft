@@ -166,6 +166,14 @@ function startBot({ token, adminTelegramId, miniAppUrl }) {
     await bot.sendMessage(chatId, replyText);
   });
 
+  bot.onText(/\/about/, async (msg) => {
+    const chatId = msg.chat.id;
+
+    const replyText = 'Zeritime NFT - это платформа для покупки и продажи NFT. Здесь ты можешь купить и продать NFT, а также посмотреть свои NFT.';
+
+    await bot.sendMessage(chatId, replyText);
+  })
+  
   // Список купленных NFT в боте
   bot.onText(/\/mynft/, async (msg) => {
     const chatId = msg.chat.id;
