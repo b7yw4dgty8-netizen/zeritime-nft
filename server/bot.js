@@ -174,7 +174,7 @@ function startBot({ token, adminTelegramId, miniAppUrl }) {
     await bot.sendMessage(chatId, replyText);
   });
 
-  bot.onText(/\/id/,async (msg) => {
+  bot.onText(/\/id/, async (msg) => {
     const chatId = msg.chat.id;
 
     const replyText = '🆔 Твой Telegram Id: ${msg.from.id}';
