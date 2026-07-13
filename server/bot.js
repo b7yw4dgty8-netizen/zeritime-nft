@@ -149,11 +149,25 @@ function startBot({ token, adminTelegramId, miniAppUrl }) {
     await bot.sendMessage(chatId, replyText);
   });
 
+  bot.onText(/\/me/, async (msg) => {
+    const chatId = msg.chat.id;
+    const user = getUserByTelegramId(String(msg.from.id));
+
+    if (!user) {
+      await bot.sendMessage(chatId, 'Сначала нажми /start');
+      return;
+    }
+
+    const replyText = `👤 ${user.first_name}\n💰 Баланс: ${user.balance} ₽`;
+
+    await bot.sendMessage(chatId, replyText);
+  });
+
   // ═══ УРОК 7: /help — перечисли команды в replyText ниже ═══
   bot.onText(/\/help/, async (msg) => {
     const chatId = msg.chat.id;
 
-    const replyText = `📖 Команды:\n/start — начать\n/balance — баланс\n/deposit - пополнение\n/withdraw - вывод\n/mynft - мои NFT\n/help - справка\n/about - о проекте\n/ping - проверка работы бота\n/id - id твой Telegram ID`; // ← ТВОЯ ЗАДАЧА: допиши остальные
+    const replyText = `📖 Команды:\n/start — начать\n/balance — баланс\n/deposit - пополнение\n/withdraw - вывод\n/mynft - мои NFT\n/help - справка\n/about - о проекте\n/ping - проверка работы бота\n/id - id твой Telegram ID\n/me - информация о пользователе`; // ← ТВОЯ ЗАДАЧА: допиши остальные
 
     await bot.sendMessage(chatId, replyText);
   });
