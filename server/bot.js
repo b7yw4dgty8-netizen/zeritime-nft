@@ -185,11 +185,18 @@ function startBot({ token, adminTelegramId, miniAppUrl }) {
     await bot.sendMessage(chatId, replyText);
   });
 
+  bot.onText(/\/catalog/, async (msg) => {
+    const chatId = msg.chat.id
+    const lines = nftCatalog.map((nft) => `• ${nft.name} - ${nft.price} ₽`).join('\n');
+    const replyText = `🖼️ Каталог NFT:\n\n${lines}\n\nПодробнее: /price owl`;
+    await bot.sendMessage(chatId, replyText);
+  });
+
   // ═══ УРОК 7: /help — перечисли команды в replyText ниже ═══
   bot.onText(/\/help/, async (msg) => {
     const chatId = msg.chat.id;
 
-    const replyText = `📖 Команды:\n/start — начать\n/balance — баланс\n/deposit - пополнение\n/withdraw - вывод\n/mynft - мои NFT\n/help - справка\n/about - о проекте\n/ping - проверка работы бота\n/id - id твой Telegram ID\n/me - информация о пользователе`; // ← ТВОЯ ЗАДАЧА: допиши остальные
+    const replyText = `📖 Команды:\n/start — начать\n/balance — баланс\n/deposit - пополнение\n/withdraw - вывод\n/mynft - мои NFT\n/help - справка\n/about - о проекте\n/ping - проверка работы бота\n/id - id твой Telegram ID\n/me - информация о пользователе\n/catalog - каталог NFT\n/price - цена NFT`; // ← ТВОЯ ЗАДАЧА: допиши остальные
 
     await bot.sendMessage(chatId, replyText);
   });
