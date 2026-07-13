@@ -25,7 +25,7 @@ module.exports = [
   {
     id: 'owl',
     name: 'My Owl',
-    price: 600,
+    price: 650,
     emoji: '🦉',
     imageUrl: 'https://picsum.photos/seed/owl/200/200',
     description: 'I drawed it for memory about my old owl pet',
