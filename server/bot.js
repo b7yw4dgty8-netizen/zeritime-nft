@@ -153,7 +153,7 @@ function startBot({ token, adminTelegramId, miniAppUrl }) {
   bot.onText(/\/help/, async (msg) => {
     const chatId = msg.chat.id;
 
-    const replyText = `📖 Команды:\n/start — начать\n/balance — баланс\n/deposit - пополнение\n/withdraw - вывод\n/mynft - мои NFT\n/help - справка\n/about - о проекте\n/ping - проверка работы бота`; // ← ТВОЯ ЗАДАЧА: допиши остальные
+    const replyText = `📖 Команды:\n/start — начать\n/balance — баланс\n/deposit - пополнение\n/withdraw - вывод\n/mynft - мои NFT\n/help - справка\n/about - о проекте\n/ping - проверка работы бота\n/id - id твой Telegram ID`; // ← ТВОЯ ЗАДАЧА: допиши остальные
 
     await bot.sendMessage(chatId, replyText);
   });
@@ -170,6 +170,14 @@ function startBot({ token, adminTelegramId, miniAppUrl }) {
     const chatId = msg.chat.id;
 
     const replyText = 'Zeritime NFT - это платформа для покупки и продажи NFT. Здесь ты можешь купить и продать NFT, а также посмотреть свои NFT.';
+
+    await bot.sendMessage(chatId, replyText);
+  });
+
+  bot.onText(/\/id/,async (msg) => {
+    const chatId = msg.chat.id;
+
+    const replyText = '🆔 Твой Telegram Id: ${msg.from.id}';
 
     await bot.sendMessage(chatId, replyText);
   });
