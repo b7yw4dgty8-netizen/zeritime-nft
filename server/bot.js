@@ -164,8 +164,8 @@ function startBot({ token, adminTelegramId, miniAppUrl }) {
     await bot.sendMessage(chatId, replyText);
   });
 
-  bot.onText(/\/price(?:\s+(\w+))?/, async (msg match) => {
-    const chatId =msg.chat.id;
+  bot.onText(/\/price(?:\s+(\w+))?/, async (msg, match) => {
+    const chatId = msg.chat.id;
     const nftId = match[1];
 
     if (!nftId) {
@@ -180,9 +180,9 @@ function startBot({ token, adminTelegramId, miniAppUrl }) {
       return;
     }
 
-    const replyText = `🖼️ ${nft.name}\n💰 Цена:: ${nft.price} ₽`;
+    const replyText = `🖼️ ${nft.name}\n💰 Цена: ${nft.price} ₽`;
 
-    await bot.sendMessage(chatId, replyText):
+    await bot.sendMessage(chatId, replyText);
   });
 
   // ═══ УРОК 7: /help — перечисли команды в replyText ниже ═══
