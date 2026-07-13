@@ -19,7 +19,7 @@ module.exports = [
     name: 'Brains Together',  // ← ТВОЯ ЗАДАЧА: поменяй название
     price: 300,              // ← ТВОЯ ЗАДАЧА: поменяй цену
     emoji: '🎨',
-    imageUrl: 'https://ibb.co/NdtskF15',
+    imageUrl: 'https://i.ibb.co/v6VHrcsp/images.jpg',
     description: 'Твой первый NFT в коллекции',
   },
   {
@@ -27,7 +27,7 @@ module.exports = [
     name: 'My Owl',
     price: 650,
     emoji: '🦉',
-    imageUrl: 'https://ibb.co/svL1sjP1',
+    imageUrl: 'https://i.ibb.co/qMbgmBng/146121854812165290.png',
     description: 'I drawed it for memory about my old owl pet',
   },
 ];
