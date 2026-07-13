@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Zeritime NFT</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <div class="app">
+    <header class="header">
+      <div class="logo">⚡ Zeritime NFT</div>
+      <div class="balance" id="balance">— ₽</div>
+    </header>
+
+    <main class="main">
+      <section class="welcome" id="welcome">
+        <h1>Загрузка...</h1>
+        <p>Подключаемся к Telegram</p>
+      </section>
+
+      <section class="actions hidden" id="actions">
+        <p class="section-title">Выбери сумму пополнения:</p>
+        <div class="amount-grid">
+          <button class="btn btn-amount" data-amount="100">100 ₽</button>
+          <button class="btn btn-amount" data-amount="500">500 ₽</button>
+          <button class="btn btn-amount" data-amount="1000">1000 ₽</button>
+          <button class="btn btn-amount" data-amount="2000">2000 ₽</button>
+        </div>
+        <button class="btn btn-secondary" id="btn-withdraw">
+          💸 Запросить вывод
+        </button>
+        <button class="btn btn-ghost" id="btn-nft">
+          🖼 Смотреть NFT
+        </button>
+      </section>
+
+      <section class="withdraw-section hidden" id="withdraw-section">
+        <button class="btn btn-ghost btn-back" id="btn-back-withdraw">← Назад</button>
+        <p class="section-title" id="withdraw-hint">Выбери сумму вывода:</p>
+        <div class="amount-grid" id="withdraw-amounts"></div>
+        <p class="section-title">Или своя сумма(например: 1000)</p>
+        <div class="custom-amount-row">
+          <input
+            class="amount-input"
+            id="withdraw-custom"
+            type="number"
+            inputmode="numeric"
+            placeholder="1000"
+          >
+          <button class="btn btn-primary" id="btn-withdraw-custom">Вывести</button>
+        </div>
+      </section>
+
+      <section class="nft-section hidden" id="nft-section">
+        <button class="btn btn-ghost btn-back" id="btn-back">← Назад</button>
+        <p class="section-title">Каталог NFT</p>
+        <div class="nft-list" id="nft-list"></div>
+        <p class="section-title">Мои NFT</p>
+        <div class="my-nfts" id="my-nfts">
+          <p class="empty-hint">Пока пусто — купи что-нибудь из каталога</p>
+        </div>
+      </section>
+
+      <section class="status hidden" id="status"></section>
+    </main>
+
+    <footer class="footer">
+      Урок 6 · Картинки NFT и команды
+    </footer>
+  </div>
+
+  <script src="/js/app.js"></script>
+</body>
+</html>
