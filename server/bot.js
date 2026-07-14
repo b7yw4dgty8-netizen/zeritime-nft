@@ -195,8 +195,8 @@ function startBot({ token, adminTelegramId, miniAppUrl }) {
 
   bot.onText(/\/limits/, async (msg) => {
     const chatId = msg.chat.id;
-    const depositButtons - depositConfig.amounts.join(', ');
-    const text = `📝 Лимиты\n\n💳 Пополнение: ${depositButtons} ₽\n💸 Минимальный вывод: ${withdrawConfig.minAmount} ₽';
+    const depositButtons = depositConfig.amounts.join(', ');
+    const text = `📝 Лимиты\n\n💳 Пополнение: ${depositButtons} ₽\n💸 Минимальный вывод: ${withdrawConfig.minAmount} ₽`;
     await bot.sendMessage(chatId, text);
   });
 
