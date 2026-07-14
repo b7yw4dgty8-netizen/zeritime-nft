@@ -209,7 +209,7 @@ function startBot({ token, adminTelegramId, miniAppUrl }) {
   bot.onText(/\/top/, async (msg) => {
     const chatId = msg.chat.id;
     let top = nftCatalog[0];
-    for (const nft or nftCatalog) {
+    for (const nft of nftCatalog) {
       if (nft.price > top.price) {
         top = nft;
       }
