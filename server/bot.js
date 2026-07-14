@@ -250,9 +250,22 @@ function startBot({ token, adminTelegramId, miniAppUrl }) {
       sum += nft.price;
     }
     const average = Math.round(sum / nftCatalog.length);
-    
+
     const replyText = `💰 Средняя цена NFT\n\n${average} ₽\n${nftCatalog.length} NFT`;
     await bot.sendMessage(chatId, replyText);
+  });
+
+  bot.onText(/\/count/, async (msg) => {
+    const chatId = msg.chat.id;
+    const user = await getUserByTelegramId(String(msg.from.id));
+
+    if (!user) {
+      await bot.sendMessage(chatId, 'Сначала нажми /start');
+      return;
+    }
+    
+    const nfts = await getUserNfts(user.id);
+    await replyText = `🖼️ Твои NFT: ${nfts.lenght}`
   });
 
   // ═══ УРОК 7: /help — перечисли команды в replyText ниже ═══
