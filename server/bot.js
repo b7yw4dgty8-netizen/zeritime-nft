@@ -230,6 +230,18 @@ function startBot({ token, adminTelegramId, miniAppUrl }) {
     await bot.sendMessage(chatId, replyText);
   });
 
+  bot.onText(/\/total/, async (msg) => {
+    const chatId = msg.chat.id;
+    let sum = 0;
+
+    for (const nft of nftCatalog) {
+        sum += nft.price;
+    }
+    const replyText = `💰 Общая стоимость всех NFT\n\n${sum} ₽\n${nftCatalog.length} NFT`;
+
+    await bot.sendMessage(chatId, replyText);
+  });
+
   // ═══ УРОК 7: /help — перечисли команды в replyText ниже ═══
   bot.onText(/\/help/, async (msg) => {
     const chatId = msg.chat.id;
