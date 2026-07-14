@@ -43,8 +43,8 @@ function startBot({ token, adminTelegramId, miniAppUrl }) {
     const chatId = msg.chat.id;
     const telegramUser = msg.from;
 
-    const { user, isNew } = findOrCreateUser(telegramUser);
-    logActivity(user.id, isNew ? 'registered' : 'opened_bot', isNew ? 'Новый пользователь' : 'Вернулся в бота');
+    const { user, isNew } = await findOrCreateUser(telegramUser);
+    await logActivity(user.id, isNew ? 'registered' : 'opened_bot', isNew ? 'Новый пользователь' : 'Вернулся в бота');
 
     const welcomeText = isNew
       ? `👋 Привет, ${telegramUser.first_name || 'друг'}!\n\nДобро пожаловать в Zeritime NFT.`
@@ -94,9 +94,9 @@ function startBot({ token, adminTelegramId, miniAppUrl }) {
       return;
     }
 
-    const { user } = findOrCreateUser(msg.from);
-    const request = createDepositRequest(user.id, amount);
-    logActivity(user.id, 'deposit_request', `Запрос ${amount} ₽`);
+    const { user } = await findOrCreateUser(msg.from);
+    const request = await createDepositRequest(user.id, amount);
+    await logActivity(user.id, 'deposit_request', `Запрос ${amount} ₽`);
 
     await bot.sendMessage(
       chatId,
@@ -116,7 +116,7 @@ function startBot({ token, adminTelegramId, miniAppUrl }) {
       return;
     }
 
-    const { user } = findOrCreateUser(msg.from);
+    const { user } = await findOrCreateUser(msg.from);
     const error = validateWithdrawal(user, amount);
 
     if (error) {
@@ -124,8 +124,8 @@ function startBot({ token, adminTelegramId, miniAppUrl }) {
       return;
     }
 
-    const request = createWithdrawalRequest(user.id, amount);
-    logActivity(user.id, 'withdrawal_request', `Запрос ${amount} ₽`);
+    const request = await createWithdrawalRequest(user.id, amount);
+    await logActivity(user.id, 'withdrawal_request', `Запрос ${amount} ₽`);
 
     await bot.sendMessage(
       chatId,
@@ -138,7 +138,7 @@ function startBot({ token, adminTelegramId, miniAppUrl }) {
   // ═══ УРОК 6: /balance — персонализируй строку replyText ниже ═══
   bot.onText(/\/balance/, async (msg) => {
     const chatId = msg.chat.id;
-    const user = getUserByTelegramId(String(msg.from.id));
+    const user = await getUserByTelegramId(String(msg.from.id));
 
     if (!user) {
       await bot.sendMessage(chatId, 'Сначала нажми /start');
@@ -152,7 +152,7 @@ function startBot({ token, adminTelegramId, miniAppUrl }) {
 
   bot.onText(/\/me/, async (msg) => {
     const chatId = msg.chat.id;
-    const user = getUserByTelegramId(String(msg.from.id));
+    const user = await getUserByTelegramId(String(msg.from.id));
 
     if (!user) {
       await bot.sendMessage(chatId, 'Сначала нажми /start');
@@ -228,14 +228,14 @@ function startBot({ token, adminTelegramId, miniAppUrl }) {
   // Список купленных NFT в боте
   bot.onText(/\/mynft/, async (msg) => {
     const chatId = msg.chat.id;
-    const user = getUserByTelegramId(String(msg.from.id));
+    const user = await getUserByTelegramId(String(msg.from.id));
 
     if (!user) {
       await bot.sendMessage(chatId, 'Сначала нажми /start');
       return;
     }
 
-    const nfts = getUserNfts(user.id);
+    const nfts = await getUserNfts(user.id);
     if (nfts.length === 0) {
       await bot.sendMessage(chatId, '🖼 У тебя пока нет NFT.\n\nОткрой Mini App → Смотреть NFT');
       return;
@@ -254,8 +254,8 @@ function startBot({ token, adminTelegramId, miniAppUrl }) {
       return;
     }
 
-    const pendingDeposits = getPendingDepositRequests();
-    const pendingWithdrawals = getPendingWithdrawalRequests();
+    const pendingDeposits = await getPendingDepositRequests();
+    const pendingWithdrawals = await getPendingWithdrawalRequests();
     const total = pendingDeposits.length + pendingWithdrawals.length;
 
     const text = total === 0
@@ -273,7 +273,7 @@ function startBot({ token, adminTelegramId, miniAppUrl }) {
       return;
     }
 
-    const users = getAllUsers();
+    const users = await getAllUsers();
     const nftCount = nftCatalog.length;
 
     const text = `📊 Статистика\n\n👥 Пользователей: ${users.length}\n🖼️ NFT в каталоге: ${nftCount}`;
@@ -290,7 +290,7 @@ function startBot({ token, adminTelegramId, miniAppUrl }) {
       return;
     }
 
-    const users = getAllUsers();
+    const users = await getAllUsers();
     if (users.length === 0) {
       await bot.sendMessage(chatId, '👥 Пользователей пока нет.');
       return;
@@ -319,7 +319,7 @@ function startBot({ token, adminTelegramId, miniAppUrl }) {
       return;
     }
 
-    const user = setWithdrawalEnabled(targetId, false);
+    const user = await setWithdrawalEnabled(targetId, false);
     if (!user) {
       await bot.sendMessage(chatId, '❌ Пользователь не найден.');
       return;
@@ -347,7 +347,7 @@ function startBot({ token, adminTelegramId, miniAppUrl }) {
       return;
     }
 
-    const user = setWithdrawalEnabled(targetId, true);
+    const user = await setWithdrawalEnabled(targetId, true);
     if (!user) {
       await bot.sendMessage(chatId, '❌ Пользователь не найден.');
       return;
@@ -385,8 +385,8 @@ function startBot({ token, adminTelegramId, miniAppUrl }) {
 
     if (isDeposit) {
       result = isApprove
-        ? approveDepositRequest(requestId)
-        : rejectDepositRequest(requestId);
+        ? await approveDepositRequest(requestId)
+        : await rejectDepositRequest(requestId);
 
       if (!result) {
         await bot.answerCallbackQuery(query.id, { text: 'Запрос уже обработан' });
@@ -403,8 +403,8 @@ function startBot({ token, adminTelegramId, miniAppUrl }) {
         : `❌ Ты отклонил пополнение ${amount} ₽ для ${formatUserName(result.user)}`;
     } else {
       result = isApprove
-        ? approveWithdrawalRequest(requestId)
-        : rejectWithdrawalRequest(requestId);
+        ? await approveWithdrawalRequest(requestId)
+        : await rejectWithdrawalRequest(requestId);
 
       if (!result) {
         await bot.answerCallbackQuery(query.id, {

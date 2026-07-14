@@ -1,3 +1,9 @@
+databases:
+  - name: zeritime-db
+    plan: free
+    databaseName: zeritime
+    user: zeritime
+
 services:
   - type: web
     name: zeritime-nft
@@ -10,3 +16,7 @@ services:
         value: production
       - key: NODE_VERSION
         value: "22.12.0"
+      - key: DATABASE_URL
+        fromDatabase:
+          name: zeritime-db
+          property: connectionString

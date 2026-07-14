@@ -5,11 +5,11 @@ const path = require('path');
 const cors = require('cors');
 const { startBot } = require('./bot');
 const apiRoutes = require('./routes/api');
+const { initDb, usePostgres } = require('./db');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Проверяем обязательные настройки
 const requiredEnv = ['BOT_TOKEN', 'ADMIN_TELEGRAM_ID'];
 const missing = requiredEnv.filter((key) => !process.env[key]);
 if (missing.length > 0) {
@@ -18,7 +18,6 @@ if (missing.length > 0) {
   process.exit(1);
 }
 
-// URL Mini App: локально, на Render или из .env
 const miniAppUrl =
   process.env.MINI_APP_URL ||
   process.env.RENDER_EXTERNAL_URL ||
@@ -26,28 +25,34 @@ const miniAppUrl =
 
 app.use(cors());
 app.use(express.json());
-
-// API-маршруты (всё, что делает Mini App на сервере)
 app.use('/api', apiRoutes);
-
-// Раздаём файлы Mini App как обычный сайт
 app.use(express.static(path.join(__dirname, '..', 'miniapp')));
 
-// Любой неизвестный путь → главная страница Mini App
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '..', 'miniapp', 'index.html'));
 });
 
-app.listen(PORT, () => {
-  console.log(`🌐 Сервер запущен: http://localhost:${PORT}`);
-  console.log(`📱 Mini App URL: ${miniAppUrl}`);
-  console.log('');
-  console.log('Следующий шаг: открой бота в Telegram и нажми /start');
-});
+async function start() {
+  try {
+    await initDb();
+    console.log(usePostgres ? '🐘 База: PostgreSQL' : '📁 База: SQLite (локально)');
 
-// Запускаем Telegram-бота
-startBot({
-  token: process.env.BOT_TOKEN,
-  adminTelegramId: process.env.ADMIN_TELEGRAM_ID,
-  miniAppUrl,
-});
+    app.listen(PORT, () => {
+      console.log(`🌐 Сервер запущен: http://localhost:${PORT}`);
+      console.log(`📱 Mini App URL: ${miniAppUrl}`);
+      console.log('');
+      console.log('Следующий шаг: открой бота в Telegram и нажми /start');
+    });
+
+    startBot({
+      token: process.env.BOT_TOKEN,
+      adminTelegramId: process.env.ADMIN_TELEGRAM_ID,
+      miniAppUrl,
+    });
+  } catch (error) {
+    console.error('❌ Не удалось запустить базу данных:', error.message);
+    process.exit(1);
+  }
+}
+
+start();

@@ -26,11 +26,6 @@ const {
 
 const router = express.Router();
 
-/**
- * Проверка данных от Telegram Mini App.
- * Telegram подписывает initData — мы проверяем, что запрос не подделан.
- * Подробнее: https://core.telegram.org/bots/webapps#validating-data-received-via-the-mini-app
- */
 function validateTelegramInitData(initData, botToken) {
   if (!initData || !botToken) return null;
 
@@ -67,14 +62,12 @@ function validateTelegramInitData(initData, botToken) {
   }
 }
 
-// Вход в Mini App — регистрируем/обновляем пользователя
-router.post('/auth', (req, res) => {
+router.post('/auth', async (req, res) => {
   const { initData } = req.body;
   const botToken = process.env.BOT_TOKEN;
 
   const telegramUser = validateTelegramInitData(initData, botToken);
 
-  // Для локальной разработки без Telegram разрешаем тестовый вход
   const isDev = process.env.NODE_ENV !== 'production';
   let userToRegister = telegramUser;
 
@@ -86,8 +79,8 @@ router.post('/auth', (req, res) => {
     return res.status(401).json({ error: 'Неверные данные Telegram' });
   }
 
-  const { user, isNew } = findOrCreateUser(userToRegister);
-  logActivity(user.id, isNew ? 'registered' : 'opened_miniapp');
+  const { user, isNew } = await findOrCreateUser(userToRegister);
+  await logActivity(user.id, isNew ? 'registered' : 'opened_miniapp');
 
   const adminId = process.env.ADMIN_TELEGRAM_ID;
   if (isNew && adminId) {
@@ -115,14 +108,13 @@ router.post('/auth', (req, res) => {
   });
 });
 
-// Получить профиль текущего пользователя
-router.get('/me', (req, res) => {
+router.get('/me', async (req, res) => {
   const telegramId = req.headers['x-telegram-id'];
   if (!telegramId) {
     return res.status(400).json({ error: 'Нужен заголовок x-telegram-id' });
   }
 
-  const user = getUserByTelegramId(telegramId);
+  const user = await getUserByTelegramId(telegramId);
   if (!user) {
     return res.status(404).json({ error: 'Пользователь не найден' });
   }
@@ -137,21 +129,20 @@ router.get('/me', (req, res) => {
   });
 });
 
-// Запрос на пополнение баланса
-router.post('/deposit-request', (req, res) => {
+router.post('/deposit-request', async (req, res) => {
   const { telegramId, amount } = req.body;
 
   if (!telegramId || !amount || amount <= 0) {
     return res.status(400).json({ error: 'Нужны telegramId и amount' });
   }
 
-  const user = getUserByTelegramId(telegramId);
+  const user = await getUserByTelegramId(telegramId);
   if (!user) {
     return res.status(404).json({ error: 'Пользователь не найден' });
   }
 
-  const request = createDepositRequest(user.id, Number(amount));
-  logActivity(user.id, 'deposit_request', `Запрос ${amount} ₽`);
+  const request = await createDepositRequest(user.id, Number(amount));
+  await logActivity(user.id, 'deposit_request', `Запрос ${amount} ₽`);
 
   const adminId = process.env.ADMIN_TELEGRAM_ID;
   if (adminId) {
@@ -161,7 +152,6 @@ router.post('/deposit-request', (req, res) => {
   res.json({ ok: true, requestId: request.id });
 });
 
-// Настройки вывода для Mini App
 router.get('/deposit-info', (req, res) => {
   res.json({
     amounts: depositConfig.amounts,
@@ -175,15 +165,14 @@ router.get('/withdraw-info', (req, res) => {
   });
 });
 
-// Запрос на вывод баланса
-router.post('/withdraw-request', (req, res) => {
+router.post('/withdraw-request', async (req, res) => {
   const { telegramId, amount } = req.body;
 
   if (!telegramId || !amount || amount <= 0) {
     return res.status(400).json({ error: 'Нужны telegramId и amount' });
   }
 
-  const user = getUserByTelegramId(telegramId);
+  const user = await getUserByTelegramId(telegramId);
   if (!user) {
     return res.status(404).json({ error: 'Пользователь не найден' });
   }
@@ -193,8 +182,8 @@ router.post('/withdraw-request', (req, res) => {
     return res.status(400).json({ error: validationError });
   }
 
-  const request = createWithdrawalRequest(user.id, Number(amount));
-  logActivity(user.id, 'withdrawal_request', `Запрос ${amount} ₽`);
+  const request = await createWithdrawalRequest(user.id, Number(amount));
+  await logActivity(user.id, 'withdrawal_request', `Запрос ${amount} ₽`);
 
   const adminId = process.env.ADMIN_TELEGRAM_ID;
   if (adminId) {
@@ -204,20 +193,19 @@ router.post('/withdraw-request', (req, res) => {
   res.json({ ok: true, requestId: request.id });
 });
 
-// Логируем действия из Mini App (кнопки, клики и т.д.)
-router.post('/action', (req, res) => {
+router.post('/action', async (req, res) => {
   const { telegramId, action, details } = req.body;
 
   if (!telegramId || !action) {
     return res.status(400).json({ error: 'Нужны telegramId и action' });
   }
 
-  const user = getUserByTelegramId(telegramId);
+  const user = await getUserByTelegramId(telegramId);
   if (!user) {
     return res.status(404).json({ error: 'Пользователь не найден' });
   }
 
-  logActivity(user.id, action, details || null);
+  await logActivity(user.id, action, details || null);
 
   const adminId = process.env.ADMIN_TELEGRAM_ID;
   if (adminId) {
@@ -230,35 +218,33 @@ router.post('/action', (req, res) => {
   res.json({ ok: true });
 });
 
-// Каталог NFT + что уже купил пользователь
-router.get('/nfts', (req, res) => {
+router.get('/nfts', async (req, res) => {
   const telegramId = req.query.telegramId;
   if (!telegramId) {
     return res.status(400).json({ error: 'Нужен telegramId' });
   }
 
-  const user = getUserByTelegramId(telegramId);
+  const user = await getUserByTelegramId(telegramId);
   if (!user) {
     return res.status(404).json({ error: 'Пользователь не найден' });
   }
 
   res.json({
     catalog: nftCatalog,
-    ownedIds: getUserNftIds(user.id),
-    owned: getUserNfts(user.id),
+    ownedIds: await getUserNftIds(user.id),
+    owned: await getUserNfts(user.id),
     balance: user.balance,
   });
 });
 
-// Купить NFT за баланс
-router.post('/nfts/buy', (req, res) => {
+router.post('/nfts/buy', async (req, res) => {
   const { telegramId, nftId } = req.body;
 
   if (!telegramId || !nftId) {
     return res.status(400).json({ error: 'Нужны telegramId и nftId' });
   }
 
-  const user = getUserByTelegramId(telegramId);
+  const user = await getUserByTelegramId(telegramId);
   if (!user) {
     return res.status(404).json({ error: 'Пользователь не найден' });
   }
@@ -268,7 +254,7 @@ router.post('/nfts/buy', (req, res) => {
     return res.status(404).json({ error: 'NFT не найден в каталоге' });
   }
 
-  const result = buyNft(user.id, nftId, catalogItem);
+  const result = await buyNft(user.id, nftId, catalogItem);
 
   if (result.error === 'already_owned') {
     return res.status(400).json({ error: 'Ты уже владеешь этим NFT' });
@@ -295,15 +281,14 @@ router.post('/nfts/buy', (req, res) => {
   });
 });
 
-// Админ: список всех пользователей (проверяем Telegram ID)
-router.get('/admin/users', (req, res) => {
+router.get('/admin/users', async (req, res) => {
   const adminId = req.headers['x-admin-telegram-id'];
 
   if (String(adminId) !== String(process.env.ADMIN_TELEGRAM_ID)) {
     return res.status(403).json({ error: 'Доступ запрещён' });
   }
 
-  res.json({ users: getAllUsers() });
+  res.json({ users: await getAllUsers() });
 });
 
 module.exports = router;
