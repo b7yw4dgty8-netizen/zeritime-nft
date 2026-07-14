@@ -200,6 +200,12 @@ function startBot({ token, adminTelegramId, miniAppUrl }) {
     await bot.sendMessage(chatId, text);
   });
 
+  bot.onText(/\/rules/, async (msg) => {
+    const chatId = msg.chat.id;
+    const replyText = `📜 Правила Zeritime NFT\n\n1. Запрещено мошенничество в любом виде\n2. Пополнение - после подтверждения адимнистратора\n3. Транзакции с NFT являются необратимыми\n4. Уважай других пользователей`;
+    await bot.sendMessage(chatId, replyText);
+  });
+
   // ═══ УРОК 7: /help — перечисли команды в replyText ниже ═══
   bot.onText(/\/help/, async (msg) => {
     const chatId = msg.chat.id;
