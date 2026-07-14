@@ -164,7 +164,7 @@ function startBot({ token, adminTelegramId, miniAppUrl }) {
     await bot.sendMessage(chatId, replyText);
   });
 
-  bot.onText(/\/price(?:\s+([\w+]+))?/, async (msg, match) => {
+  bot.onText(/\/price(?:\s+([\w-]+))?/, async (msg, match) => {
     const chatId = msg.chat.id;
     const nftId = match[1];
 
