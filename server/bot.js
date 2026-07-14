@@ -206,11 +206,23 @@ function startBot({ token, adminTelegramId, miniAppUrl }) {
     await bot.sendMessage(chatId, replyText);
   });
 
+  bot.onText(/\/top/, async (msg) => {
+    const chatId = msg.chat.id;
+    let top = nftCatalog[0];
+    for (const nft or nftCatalog) {
+      if (nft.price > top.price) {
+        top = nft;
+      }
+    }
+    const replyText = `🏆 Самый дорогой NFT\n\n${top.name} - ${top.price} ₽\nПодообнее: /price ${top.id}`;
+    await bot.sendMessage(chatId, replyText);
+  });
+
   // ═══ УРОК 7: /help — перечисли команды в replyText ниже ═══
   bot.onText(/\/help/, async (msg) => {
     const chatId = msg.chat.id;
 
-    const replyText = `📖 Команды:\n/start — начать\n/balance — баланс\n/deposit - пополнение\n/withdraw - вывод\n/mynft - мои NFT\n/help - справка\n/about - о проекте\n/ping - проверка работы бота\n/id - id твой Telegram ID\n/me - информация о пользователе\n/catalog - каталог NFT\n/price - цена NFT\n/limits - лимиты`; // ← ТВОЯ ЗАДАЧА: допиши остальные
+    const replyText = `📖 Команды:\n/start — начать\n/balance — баланс\n/deposit - пополнение\n/withdraw - вывод\n/mynft - мои NFT\n/help - справка\n/about - о проекте\n/ping - проверка работы бота\n/id - id твой Telegram ID\n/me - информация о пользователе\n/catalog - каталог NFT\n/price - цена NFT\n/limits - лимиты\n/rules - правила\n/top - топ NFT`; // ← ТВОЯ ЗАДАЧА: допиши остальные
 
     await bot.sendMessage(chatId, replyText);
   });
