@@ -276,7 +276,7 @@ function startBot({ token, adminTelegramId, miniAppUrl }) {
     const users = getAllUsers();
     const nftCount = nftCatalog.length;
 
-    const text = '📊 Статистика\n\n👥 Пользователей: ${users.lenght}\n🖼️ NFT в каталоге: ${nftCount}';
+    const text = '📊 Статистика\n\n👥 Пользователей: ${users.length}\n🖼️ NFT в каталоге: ${nftCount}';
 
     await bot.sendMessage(chatId, text);
   });
