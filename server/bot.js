@@ -265,6 +265,22 @@ function startBot({ token, adminTelegramId, miniAppUrl }) {
     await bot.sendMessage(chatId, text);
   });
 
+  bot.onText(/\/stats/, async (msg) => {
+    const chatId = msg.chat.id;
+    
+    if (String(chatId) !== String(adminTelegramId)) {
+      await bot.sendMessage(chatId, '⛔ Эта команда только для администратора.');
+      return;
+    }
+
+    const users = getAllUsers();
+    const nftCount = nftCatalog.length;
+
+    const text = '📊 Статистика\n\n👥 Пользователей: ${users.lenght}\n🖼️ NFT в каталоге: ${nftCount}';
+
+    await bot.sendMessage(chatId, text);
+  });
+
   // Список пользователей — только админ
   bot.onText(/\/users/, async (msg) => {
     const chatId = msg.chat.id;
