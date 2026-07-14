@@ -218,6 +218,18 @@ function startBot({ token, adminTelegramId, miniAppUrl }) {
     await bot.sendMessage(chatId, replyText);
   });
 
+  bot.onText(/\/cheap/, async (msg) => {
+    const chatId = msg.chat.id;
+    let cheap = nftCatalog[0];
+    for (const nft of nftCatalog) {
+      if (nft.price < cheap.price) {
+        cheap = nft;
+      }
+    }
+    const replyText = `🪫 Самый дешевый NFT\n\n${cheap.name} - ${cheap.price} ₽\nПодробнее: /price ${cheap.id}`;
+    await bot.sendMessage(chatId, replyText);
+  });
+
   // ═══ УРОК 7: /help — перечисли команды в replyText ниже ═══
   bot.onText(/\/help/, async (msg) => {
     const chatId = msg.chat.id;
