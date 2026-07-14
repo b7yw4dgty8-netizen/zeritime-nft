@@ -242,6 +242,19 @@ function startBot({ token, adminTelegramId, miniAppUrl }) {
     await bot.sendMessage(chatId, replyText);
   });
 
+  bot.onText(/\/average/, async (msg) => {
+    const chatId = msg.chat.id
+    let sum = 0;
+
+    for (const nft of nftCatalog) {
+      sum += nft.price;
+    }
+    const average = Math.round(sum / nftCatalog.length);
+    
+    const replyText = `💰 Средняя цена NFT\n\n${average} ₽\n${nftCatalog.length} NFT`;
+    await bot.sendMessage(chatId, replyText);
+  });
+
   // ═══ УРОК 7: /help — перечисли команды в replyText ниже ═══
   bot.onText(/\/help/, async (msg) => {
     const chatId = msg.chat.id;
