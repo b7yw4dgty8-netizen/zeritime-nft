@@ -282,7 +282,7 @@ function startBot({ token, adminTelegramId, miniAppUrl }) {
     const nfts = await getUserNfts(user.id);
     let sum = 0;
 
-    for (const nft of nftCatalog) {
+    for (const nft of nfts) {
       sum += nft.price_paid;
     }
 
