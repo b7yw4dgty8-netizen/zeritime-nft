@@ -265,7 +265,9 @@ function startBot({ token, adminTelegramId, miniAppUrl }) {
     }
 
     const nfts = await getUserNfts(user.id);
-    const replyText = `🖼️ Твои NFT: ${nfts.lenght}`
+    const replyText = `🖼 У тебя ${nfts.length} NFT`;
+
+    await bot.sendMessage(chatId, replyText);
   });
 
   // ═══ УРОК 7: /help — перечисли команды в replyText ниже ═══
