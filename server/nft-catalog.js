@@ -33,9 +33,9 @@ module.exports = [
   {
     id: 'blue-cube',
     name: 'Blue Cube',
-    price: '5000',
+    price: 5000,
     emoji: '🧊',
     imageUrl : 'https://i.ibb.co/q3fMnM1h/3d-rendering-geometric-cube-23-2150979614-jpg.avif',
-    descriptiom: 'Blue Cube is a cube that is blue',
+    description: 'Blue Cube is a cube that is blue',
   },
 ];
