@@ -242,6 +242,29 @@ async function buyNft(userId, nftId, catalogItem) {
   };
 }
 
+async function giftNft(userId, nftId, catalogItem) {
+  const user = await getUserById(userId);
+  if (!user) return { error: 'user_not_found' };
+
+  const owned = await pool.query(
+    'SELECT id FROM user_nfts WHERE user_id = $1 AND nft_id = $2',
+    [userId, nftId]
+  );
+  if (owned.rows.length > 0) return { error: 'already_owned' };
+
+  await pool.query(
+    `INSERT INTO user_nfts (user_id, nft_id, nft_name, price_paid)
+     VALUES ($1, $2, $3, $4)`,
+    [userId, nftId, catalogItem.name, 0]
+  );
+  await logActivity(userId, 'nft_gift', `Подарок: ${catalogItem.name}`);
+
+  return {
+    user: await getUserById(userId),
+    nft: catalogItem,
+  };
+}
+
 async function rejectDepositRequest(requestId) {
   const request = await getDepositRequestById(requestId);
   if (!request || request.status !== 'pending') return null;
@@ -368,6 +391,7 @@ module.exports = {
   getUserNftIds,
   getUserNfts,
   buyNft,
+  giftNft,
   createWithdrawalRequest,
   getWithdrawalRequestById,
   getPendingWithdrawalRequests,

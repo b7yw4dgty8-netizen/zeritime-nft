@@ -233,6 +233,27 @@ function buyNft(userId, nftId, catalogItem) {
   };
 }
 
+function giftNft(userId, nftId, catalogItem) {
+  const user = getUserById(userId);
+  if (!user) return { error: 'user_not_found' };
+
+  const alreadyOwned = db
+    .prepare('SELECT id FROM user_nfts WHERE user_id = ? AND nft_id = ?')
+    .get(userId, nftId);
+  if (alreadyOwned) return { error: 'already_owned' };
+
+  db.prepare(`
+    INSERT INTO user_nfts (user_id, nft_id, nft_name, price_paid)
+    VALUES (?, ?, ?, ?)
+  `).run(userId, nftId, catalogItem.name, 0);
+  logActivity(userId, 'nft_gift', `Подарок: ${catalogItem.name}`);
+
+  return {
+    user: getUserById(userId),
+    nft: catalogItem,
+  };
+}
+
 function rejectDepositRequest(requestId) {
   const request = getDepositRequestById(requestId);
   if (!request || request.status !== 'pending') return null;
@@ -342,6 +363,7 @@ module.exports = {
   getUserNftIds,
   getUserNfts,
   buyNft,
+  giftNft,
   createWithdrawalRequest,
   getWithdrawalRequestById,
   getPendingWithdrawalRequests,

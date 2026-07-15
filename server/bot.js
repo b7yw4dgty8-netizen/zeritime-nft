@@ -14,6 +14,7 @@ const {
   getAllUsers,
   setWithdrawalEnabled,
   getUserNfts,
+  giftNft,
 } = require('./db');
 const withdrawConfig = require('./withdraw-config');
 const depositConfig = require('./deposit-config');
@@ -420,6 +421,52 @@ function startBot({ token, adminTelegramId, miniAppUrl }) {
     });
 
     await bot.sendMessage(chatId, `👥 Пользователи (${users.length}):\n\n${lines.join('\n\n')}`);
+  });
+
+  // Подарить NFT пользователю — только админ
+  bot.onText(/\/gift(?:\s+([\w-]+))?(?:\s+(\d+))?/, async (msg, match) => {
+    const chatId = msg.chat.id;
+
+    if (String(chatId) !== String(adminTelegramId)) {
+      await bot.sendMessage(chatId, '⛔ Эта команда только для администратора.');
+      return;
+    }
+
+    const nftId = match[1];
+    const targetTelegramId = match[2];
+
+    if (!nftId || !targetTelegramId) {
+      await bot.sendMessage(chatId, '🎁 Напиши так:\n/gift cat 8779645850');
+      return;
+    }
+
+    const catalogItem = nftCatalog.find((item) => item.id === nftId);
+    if (!catalogItem) {
+      await bot.sendMessage(chatId, '❌ Такого NFT нет в каталоге.');
+      return;
+    }
+
+    const targetUser = await getUserByTelegramId(targetTelegramId);
+    if (!targetUser) {
+      await bot.sendMessage(chatId, '❌ Пользователь не найден. Пусть нажмёт /start.');
+      return;
+    }
+
+    const result = await giftNft(targetUser.id, nftId, catalogItem);
+
+    if (result.error === 'already_owned') {
+      await bot.sendMessage(chatId, `❌ У ${formatUserName(targetUser)} уже есть этот NFT.`);
+      return;
+    }
+
+    await bot.sendMessage(
+      chatId,
+      `🎁 Подарено!\n\n👤 ${formatUserName(targetUser)}\n🖼 ${catalogItem.name}`
+    );
+    await notifyUser(
+      targetTelegramId,
+      `🎁 Тебе подарили NFT!\n\n🖼 ${catalogItem.name}\n\nСмотри: /mynft`
+    );
   });
 
   // Заблокировать вывод пользователю

@@ -16,6 +16,7 @@ const METHODS = [
   'getUserNftIds',
   'getUserNfts',
   'buyNft',
+  'giftNft',
   'createWithdrawalRequest',
   'getWithdrawalRequestById',
   'getPendingWithdrawalRequests',
