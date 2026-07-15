@@ -360,7 +360,10 @@ function startBot({ token, adminTelegramId, miniAppUrl }) {
       return;
     }
 
-    const lines = nfts.map((nft) => `• ${nft.nft_name} — ${nft.price_paid} ₽`).join('\n');
+    const lines = nfts.map((nft) => {
+      const price = nft.price_paid === 0 ? '🎁 подарок' : `${nft.price_paid} ₽`;
+      return `• ${nft.nft_name} — ${price}`;
+    }).join('\n');
     await bot.sendMessage(chatId, `🖼 Твои NFT:\n\n${lines}`);
   });
 

@@ -130,12 +130,15 @@ function renderMyNfts(owned) {
 
   myNftsEl.innerHTML = owned
     .map(
-      (item) => `
+      (item) => {
+        const price = item.price_paid === 0 ? '🎁 подарок' : `${item.price_paid} ₽`;
+        return `
         <div class="my-nft-item">
           <span>✅</span>
-          <span>${item.nft_name} · ${item.price_paid} ₽</span>
+          <span>${item.nft_name} · ${price}</span>
         </div>
-      `
+      `;
+      }
     )
     .join('');
 }
