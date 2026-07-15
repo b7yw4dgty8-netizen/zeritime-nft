@@ -38,4 +38,12 @@ module.exports = [
     imageUrl : 'https://i.ibb.co/q3fMnM1h/3d-rendering-geometric-cube-23-2150979614-jpg.avif',
     description: 'Blue Cube is a cube that is blue',
   },
+  {
+    id: 'cat',
+    name: 'Sweet cat',
+    price: 10000,
+    emoji: '🐱',
+    imageUrl: 'https://i.ibb.co/JjQSfXPF/20-Cat-Drawings-By-Mj-Majcha-That-Are-Probably-One-Of-The-Cutest-Things-On-The-Internet-New-Pics-677.jpg',
+    description: 'Sweet cat is a cat that is sweet',
+  }
 ];

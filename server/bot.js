@@ -314,7 +314,7 @@ function startBot({ token, adminTelegramId, miniAppUrl }) {
   bot.onText(/\/help/, async (msg) => {
     const chatId = msg.chat.id;
 
-    const replyText = `📖 Команды:\n/start — начать\n/balance — баланс\n/deposit - пополнение\n/withdraw - вывод\n/mynft - мои NFT\n/help - справка\n/about - о проекте\n/ping - проверка работы бота\n/id - id твой Telegram ID\n/me - информация о пользователе\n/catalog - каталог NFT\n/price - цена NFT\n/limits - лимиты\n/rules - правила\n/top - топ NFT\n cheap - самый дешевый NFT\n total - общая стоимость всех NFT\n average - средняя цена NFT\n count - количество NFT\n spent - сумма потраченная на NFT\n wallet - информация о твоем кошельке`; // ← ТВОЯ ЗАДАЧА: допиши остальные
+    const replyText = `📖 Команды:\n/start — начать\n/balance — баланс\n/deposit - пополнение\n/withdraw - вывод\n/mynft - мои NFT\n/help - справка\n/about - о проекте\n/ping - проверка работы бота\n/id - id твой Telegram ID\n/me - информация о пользователе\n/catalog - каталог NFT\n/price - цена NFT\n/limits - лимиты\n/rules - правила\n/top - топ NFT\n/cheap - самый дешевый NFT\n/total - общая стоимость всех NFT\n/average - средняя цена NFT\n/count - количество NFT\n/spent - сумма потраченная на NFT\n/wallet - информация о твоем кошельке`; // ← ТВОЯ ЗАДАЧА: допиши остальные
 
     await bot.sendMessage(chatId, replyText);
   });
