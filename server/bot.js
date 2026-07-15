@@ -290,6 +290,26 @@ function startBot({ token, adminTelegramId, miniAppUrl }) {
     await bot.sendMessage (chatId, replyText);
   });
 
+  bot.onText(/\/wallet/, async (msg) => {
+    const chatId = msg.chat.id;
+    const user = await getUserByTelegramId(String(msg.from.id));
+
+    if (!user) {
+      await bot.sendMessage (chatId, 'Сначала нажми /start');
+      return;
+    }
+
+    const nfts = await getUserNfts(user.id);
+    let sum = 0;
+
+    for (const nft of nfts) {
+      sum += nft.price_paid;
+    }
+
+    const replyText = `💰 Баланс: ${user.balance}\n🖼️ NFT: ${nfts.length}\n💸 Потрачено: ${sum} ₽`; 
+    await bot.sendMessage (chatId, replyText);
+    });
+
   // ═══ УРОК 7: /help — перечисли команды в replyText ниже ═══
   bot.onText(/\/help/, async (msg) => {
     const chatId = msg.chat.id;
