@@ -328,11 +328,11 @@ function startBot({ token, adminTelegramId, miniAppUrl }) {
     await bot.sendMessage(chatId, replyText);
   });
 
-  bot.onText(/\/time/, async(msg) => {
+  bot.onText(/\/time/, async (msg) => {
     const chatId = msg.chat.id;
     const time = new Date().toLocaleString('ru-RU');
 
-    const replyText = '🕰️ Сейчас: ${time}';
+    const replyText = `🕰️ Сейчас: ${time}`;
     await bot.sendMessage(chatId, replyText)
     
   });
