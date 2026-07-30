@@ -323,10 +323,9 @@ function startBot({ token, adminTelegramId, miniAppUrl }) {
   bot.onText(/\/ping/, async (msg) => {
     const chatId = msg.chat.id;
 
-    const replyText = `👞 Бот работает`; // ← ТВОЯ ЗАДАЧА: допиши остальные
+    const replyText = `👞 Проект работает стабильно`; // ← ТВОЯ ЗАДАЧА: допиши остальные
 
     await bot.sendMessage(chatId, replyText);
-    console.log(msg);
   });
 
   bot.onText(/\/about/, async (msg) => {
