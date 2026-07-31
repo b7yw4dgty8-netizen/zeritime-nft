@@ -152,6 +152,12 @@ function startBot({ token, adminTelegramId, miniAppUrl }) {
     await bot.sendMessage(chatId, replyText);
   });
 
+  bot.onText(/\/hello/, async (msg) => {
+    const chatId = msg.user.id;
+    const replyText = `Привет, ${msg.from.first_name}!`;
+    bot.sendMessage(chatId, replyText);
+  };
+
   bot.onText(/\/me/, async (msg) => {
     const chatId = msg.chat.id;
     const user = await getUserByTelegramId(String(msg.from.id));
