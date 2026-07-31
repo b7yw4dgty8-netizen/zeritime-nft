@@ -87,7 +87,7 @@ body {
 
 .btn-amount {
   background: var(--accent);
-  color: white;
+  color: yellow;
   padding: 14px 8px;
   font-size: 0.95rem;
 }
