@@ -165,7 +165,7 @@ function startBot({ token, adminTelegramId, miniAppUrl }) {
     const user = await getUserByTelegramId(String(msg.from.id));
 
     if (!user) {
-      await bot.sendMessage(chatId, Сначала нажми /start);
+      await bot.sendMessage(chatId, 'Сначала нажми /start');
       return;
     }
 
