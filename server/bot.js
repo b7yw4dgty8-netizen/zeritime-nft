@@ -176,7 +176,7 @@ function startBot({ token, adminTelegramId, miniAppUrl }) {
       sum += nft.price_paid;
     }
 
-    const replyText = `Профиль пользователя ${user.firts_name}/n/n Баланс: ${user.balance} ₽/n NFT: ${nfts.lenght}/n Потрачено: ${sum} ₽`;
+    const replyText = `Профиль пользователя ${user.first_name}\n\n Баланс: ${user.balance} ₽\n NFT: ${nfts.lenght}\n Потрачено: ${sum} ₽`;
     await bot.sendMessage (chatId, replyText);
 
   });
