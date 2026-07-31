@@ -155,7 +155,7 @@ function startBot({ token, adminTelegramId, miniAppUrl }) {
   bot.onText(/\/hello/, async (msg) => {
     const chatId = msg.user.id;
     const replyText = `Привет, ${msg.from.first_name}!`;
-    bot.sendMessage(chatId, replyText);
+    await bot.sendMessage(chatId, replyText);
   });
 
   bot.onText(/\/me/, async (msg) => {
