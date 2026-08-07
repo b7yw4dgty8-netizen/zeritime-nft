@@ -19,6 +19,7 @@ const {
 const withdrawConfig = require('./withdraw-config');
 const depositConfig = require('./deposit-config');
 const nftCatalog = require('./nft-catalog');
+const packageJson = require('../package.json');
 
 let bot = null;
 
@@ -355,6 +356,12 @@ function startBot({ token, adminTelegramId, miniAppUrl }) {
     const replyText = `👞 Проект работает стабильно`; // ← ТВОЯ ЗАДАЧА: допиши остальные
 
     await bot.sendMessage(chatId, replyText);
+  });
+
+  bot.onText(/\/version/, async (msg) => {
+    const chatId = msg.chat.id;
+    const replyText = `Zeritime NFT ${packageJson.version}`;
+    await bot.sendMessage(chatId< replyText);
   });
 
   bot.onText(/\/time/, async (msg) => {

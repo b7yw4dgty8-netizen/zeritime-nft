@@ -1,0 +1,14 @@
+# App Store Isaac CANNOT be debugged with lldb on stock macOS.
+# Both `run` and `process attach` fail:
+#   "process exited with status -1"  OR  "Not allowed to attach to process"
+# This is normal for signed App Store apps (SIP / debug entitlement).
+#
+# Use capture instead:
+#   bash isaac_learn_capture.sh before
+#   # play, pick up 1 item
+#   bash isaac_learn_capture.sh after
+#
+# Correct binary path (for reference only):
+#   /Applications/The Binding of Isaac: Rebirth.app/Wrapper/The Binding of Isaac Rebirth.app/The Binding of Isaac Rebirth
+#
+# Do NOT use the outer .app launcher or a truncated path.
