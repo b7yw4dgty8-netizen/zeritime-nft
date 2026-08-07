@@ -361,7 +361,7 @@ function startBot({ token, adminTelegramId, miniAppUrl }) {
   bot.onText(/\/version/, async (msg) => {
     const chatId = msg.chat.id;
     const replyText = `Zeritime NFT ${packageJson.version}`;
-    await bot.sendMessage(chatId< replyText);
+    await bot.sendMessage(chatId, replyText);
   });
 
   bot.onText(/\/time/, async (msg) => {
